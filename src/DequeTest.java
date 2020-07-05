@@ -11,7 +11,7 @@ import org.junit.Test;
  * @author <a href="mailto:antoinegrondin@gmail.com">Antoine Grondin</a>
  *
  */
-public class DequeTest extends TestCase{
+public class DequeTest extends TestCase {
 
     ///////////////////////////////////////////////////////////////////////////
     // Fields
@@ -198,7 +198,7 @@ public class DequeTest extends TestCase{
         try {
             mDequeue.addFirst(null);
             fail("Should have thrown a NullPointerException");
-        } catch (NullPointerException npe){
+        } catch (NullPointerException | IllegalArgumentException npe){
             // Continue
         } catch (Exception e){
             fail("Wrong exception catched." + e);
@@ -207,7 +207,7 @@ public class DequeTest extends TestCase{
         try {
             mDequeue.addLast(null);
             fail("Should have thrown a NullPointerException");
-        } catch (NullPointerException npe){
+        } catch (NullPointerException | IllegalArgumentException npe){
             // Continue
         } catch (Exception e){
             fail("Wrong exception catched." + e);
@@ -314,7 +314,7 @@ public class DequeTest extends TestCase{
         for(int i = 0; i < MAX_PROBLEM_SIZE; i++){
             mDequeue.addFirst( String.valueOf(i) );
         }
-
+    
         anIterator = mDequeue.iterator();
 
         assertTrue( anIterator.hasNext() );

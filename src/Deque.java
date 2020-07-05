@@ -29,11 +29,12 @@ public class Deque<Item> implements Iterable<Item> {
     // construct an empty deque
     public Deque() {
         first = null;
+        last = null;
         n = 0;
     }
 
     // is the deque empty?
-    public boolean isEmpty() { return first == null; }
+    public boolean isEmpty() { return n == 0; }
 
     // return the number of items on the deque
     public int size() { return n; }
@@ -69,7 +70,7 @@ public class Deque<Item> implements Iterable<Item> {
         if (isEmpty()) throw new java.util.NoSuchElementException("list is already empty");
         Item item = first.item;
         first = first.next;
-        first.prev = null;
+        if (first != null) first.prev = null;
         n--;
         if (isEmpty()) last = null;
         return item;
@@ -80,7 +81,7 @@ public class Deque<Item> implements Iterable<Item> {
         if (isEmpty()) throw new java.util.NoSuchElementException("list is already empty");
         Item item = last.item;
         last = last.prev;
-        last.next = null;
+        if (last != null) last.next = null;
         n--;
         if (isEmpty()) first = null;
         return item;
