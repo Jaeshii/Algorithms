@@ -41,15 +41,15 @@ public class FastCollinearPoints {
         LinkedList<Point> collinearPoints = new LinkedList<Point>(); // store collinear points relative to each reference origin point
 
         // check to see if argument matches constraints
-        for (Point point : this.points) // reference origin point
+        for (Point p : this.points) // reference origin point
         {
-            Arrays.sort(this.points, point.slopeOrder());
+            Arrays.sort(this.points, p.slopeOrder());
             double prevSlope = 0.0;
 
             for (int j = 0; j < this.points.length; j++) {
-                double currentSlope = point.slopeTo(this.points[j]);
+                double currSlope = p.slopeTo(this.points[j]);
                 // if the current slope doesn't match the previous slope, add line segment if more than 3 collinear points, then clear collinearpoints
-                if (j == 0 || currentSlope != prevSlope) // j==0 condition exists for the off-chance the currentSlope equals 0.0 on the first iteration
+                if (j == 0 || currSlope != prevSlope) // j==0 condition exists for the off-chance the currSlope equals 0.0 on the first iteration
                 {
 
                     if (collinearPoints.size() >= 3) {
@@ -61,7 +61,7 @@ public class FastCollinearPoints {
                 }
                 // add to collinear if slope matches
                 collinearPoints.add(this.points[j]);
-                prevSlope = currentSlope;
+                prevSlope = currSlope;
             }
         }
 
