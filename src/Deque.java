@@ -1,6 +1,8 @@
 import edu.princeton.cs.algs4.LinkedStack;
 
+import java.util.ArrayDeque;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 public class Deque<Item> implements Iterable<Item> {
