@@ -7,7 +7,7 @@ import java.util.Comparator;
 
 public class Solver {
 
-    private class SearchNode {
+    private class SearchNode implements Comparable<SearchNode> {
 
         private final Board board;
         private final int moves;
@@ -18,46 +18,52 @@ public class Solver {
             this.moves = moves;
             this.previous = previous;
         }
-    }
 
-    private class SearchNodesOrder implements Comparator<SearchNode> {
-
-        public int  compare(SearchNode sn1, SearchNode sn2) {
-            int sn1Manhattan = sn1.board.manhattan();
-            int sn2Manhattan = sn2.board.manhattan();
-            int sn1Priority = sn1.moves + sn1Manhattan;
-            int sn2Priority = sn2.moves + sn1Manhattan;
-
-            if (sn1Priority < sn2Priority) {
-                return -1;
-            }
-
-            if (sn1Priority > sn2Priority) {
-                return 1;
-            }
-
-            if (sn1Manhattan < sn2Manhattan) {
-                return -1;
-            }
-
-            if (sn1Manhattan > sn2Manhattan) {
-                return 1;
-            }
-
-            return 0;
-
+        @Override
+        public int compareTo(SearchNode that) {
+            int priorityDiff = (this.board.manhattan() + this.moves) - (that.board.manhattan() + that.moves);
+            return  priorityDiff == 0 ? this.board.manhattan() - that.board.manhattan() : priorityDiff;
         }
     }
 
+//    private class SearchNodesOrder implements Comparator<SearchNode> {
+//
+//        public int  compare(SearchNode sn1, SearchNode sn2) {
+//            int sn1Manhattan = sn1.board.manhattan();
+//            int sn2Manhattan = sn2.board.manhattan();
+//            int sn1Priority = sn1.moves + sn1Manhattan;
+//            int sn2Priority = sn2.moves + sn1Manhattan;
+//
+//            if (sn1Priority < sn2Priority) {
+//                return -1;
+//            }
+//
+//            if (sn1Priority > sn2Priority) {
+//                return 1;
+//            }
+//
+//            if (sn1Manhattan < sn2Manhattan) {
+//                return -1;
+//            }
+//
+//            if (sn1Manhattan > sn2Manhattan) {
+//                return 1;
+//            }
+//
+//            return 0;
+//
+//        }
+//    }
+
     private boolean solvable;
-    private Stack<Board> solution;
+    private final Stack<Board> solution;
 
     // find a solution to the initial board (using the A* algorithm)
     public Solver(Board initial) {
         if (initial == null) throw new NullPointerException();
         solvable = false;
         solution = new Stack<>();
-        MinPQ<SearchNode> search = new MinPQ<>(new SearchNodesOrder());
+        MinPQ<SearchNode> search = new MinPQ<>();
 
         search.insert(new SearchNode(initial, 0, null));
         search.insert(new SearchNode(initial.twin(), 0, null));

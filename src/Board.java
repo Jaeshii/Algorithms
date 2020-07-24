@@ -3,8 +3,8 @@ import edu.princeton.cs.algs4.StdRandom;
 
 public class Board {
     private final int size;
-    int[] board;  // 1d array representation of a board
-    int[] board2d;
+    private Board twin;
+    private final int[] board;  // 1d array representation of a board
 
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
@@ -41,8 +41,8 @@ public class Board {
     // number of tiles out of place
     public int hamming() {
         int distance = 0;
-        for (int i = 0; i < size; i++) {
-            if (board[i] !=0 && board[i] == i + 1) {
+        for (int i = 0; i < board.length; i++) {
+            if (board[i] != 0 && board[i] != i + 1) {
                 distance++;
             }
         }
@@ -73,7 +73,7 @@ public class Board {
 
     // is this board the goal board?
     public boolean isGoal() {
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < board.length; i++) {
             if (board[i] != 0  && board[i] != i + 1)
                 return false;
         }
@@ -128,7 +128,7 @@ public class Board {
     // all neighboring boards
     public Iterable<Board> neighbors() {
         // shift in (x, y) coords
-        int directions[][] = { { 1, 0 }, {-1, 0 }, { 0, 1 }, { 0, -1 } };
+        int[][] directions = { { 1, 0 }, {-1, 0 }, { 0, 1 }, { 0, -1 } };
 
         Stack<Board> neighbors = new Stack<>();
 
@@ -154,7 +154,6 @@ public class Board {
                     int tmp = boardClone[i];
                     boardClone[i] = boardClone[r * size + c];
                     boardClone[r * size + c] = tmp;
-
                     neighbors.push(new Board(monoToBidi(boardClone)));
                 }
 
@@ -166,31 +165,46 @@ public class Board {
 
     // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
-        int[] boardClone = board.clone();
+        if (twin == null) {
+            int[] boardClone = board.clone();
 
-        int indexFrom = StdRandom.uniform(0, board.length);
-        int indexTo = StdRandom.uniform(0, board.length);;
+            int indexFrom = StdRandom.uniform(0, board.length);
+            int indexTo = StdRandom.uniform(0, board.length);
 
-        while (boardClone[indexFrom] == 0) {
-            indexFrom = StdRandom.uniform(0, board.length);
+            while (boardClone[indexFrom] == 0) {
+                indexFrom = StdRandom.uniform(0, board.length);
+            }
+
+            while (boardClone[indexTo] == 0 || boardClone[indexFrom] == boardClone[indexTo]) {
+                indexTo = StdRandom.uniform(0, board.length);
+            }
+
+            int tmp = boardClone[indexFrom];
+            boardClone[indexFrom] = boardClone[indexTo];
+            boardClone[indexTo] = tmp;
+
+            twin = new Board(monoToBidi(boardClone));
         }
 
-        while (boardClone[indexTo] == 0 || boardClone[indexTo] == boardClone[indexFrom]) {
-            indexTo = StdRandom.uniform(0, board.length);
-        }
-
-        int tmp = boardClone[indexFrom];
-        boardClone[indexFrom] = boardClone[indexTo];
-        boardClone[indexTo] = tmp;
-
-        return new Board(monoToBidi(boardClone));
+        return twin;
 
     }
 
+
     // unit testing (not graded)
     public static void main(String[] args) {
-        Board test = new Board(new int[][]{{1, 2, 3, 4}, {3, 5, 2, 3}, {1, 2, 3, 4}, {3, 5, 2, 3}});
+        Board test = new Board(new int[][]{{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 0}});
         System.out.println(test);
+//        System.out.println(test.dimension());
+//        System.out.println(test.manhattan());
+//        System.out.println(test.hamming());
+//        for (int i = 0; i < 50; i++) {
+//            System.out.println(test.twin());
+//        }
+        Stack<Board> neighbors = (Stack<Board>) test.neighbors();
+        for (Board b : neighbors) {
+            System.out.println(b);
+        }
     }
 
 }
